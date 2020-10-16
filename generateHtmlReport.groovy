@@ -3,15 +3,12 @@
 import groovy.xml.MarkupBuilder
 
 @NonCPS
-def generateHtmlReport() {
+def generateHtmlReport(moduleStewards) {
 
-    def stewards = ['Greeshm', 'Aarit', 'Mannava']
-    def reviewrs = ['Naga', 'Swetha', 'Mannava']
-    def hashmap = ['svt-module': stewards, 'svt-reviewrs': reviewrs]
     def num = 1
 
-    StringWriter st = new StringWriter()
-    def mkup = new MarkupBuilder(st)
+    def writer = new StringWriter()
+    def mkup = new MarkupBuilder(writer)
 
     mkup.html {
         delegate.head {
@@ -25,7 +22,7 @@ def generateHtmlReport() {
                     delegate.th(width: "150px", 'Module')
                     delegate.th(width: "300px", 'Steward')
                 }
-                hashmap.each { k, vList ->
+                moduleStewards.each { k, vList ->
                     delegate.delegate.tr(style:"text-align:left") {
                         delegate.td(style:"padding-left:10px", num)
                         delegate.td(style:"padding-left:10px", k)
@@ -40,7 +37,7 @@ def generateHtmlReport() {
             }
         }
     }
-    println st.toString()
+    println writer.toString()
 }
 
 return this

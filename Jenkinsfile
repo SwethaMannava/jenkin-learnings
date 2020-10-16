@@ -21,8 +21,8 @@ pipeline {
                         // report = load("${rootDir}\\htmlTable.groovy")
                     }
 
-                    test.testSR()
-                    report.generateHtmlReport()
+                    def testResult = test.testSR()
+                    report.generateHtmlReport(testResult)
                     // report.parseToHTMLTable()
                 }
             }
