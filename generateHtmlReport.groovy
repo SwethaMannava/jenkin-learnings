@@ -20,15 +20,17 @@ def generateHtmlReport(moduleStewards) {
                 delegate.tr(style:"background-color:#deebff", height: "40px"){
                     delegate.th(width: "35px", '')
                     delegate.th(width: "150px", 'Module')
-                    delegate.th(width: "300px", 'Steward')
+                    delegate.th(width: "300px", 'Stewards')
                 }
                 moduleStewards.each { k, vList ->
                     delegate.delegate.tr(style:"text-align:left") {
                         delegate.td(style:"padding-left:10px", num)
                         delegate.td(style:"padding-left:10px", k)
                         delegate.td(style:"padding-left:10px") {
-                            vList.each {steward ->
-                                delegate.delegate.span(style:"display:block", steward)
+                            vList.each {steward, mailId ->
+                                delegate.delegate.span(style:"display:block") {
+                                    delegate.a(href:"mailto: ${mailId}", steward)
+                                }
                             }
                         }
                     }
@@ -37,8 +39,7 @@ def generateHtmlReport(moduleStewards) {
             }
         }
     }
-    println writer.toString()
+    return writer.toString()
 }
 
 return this
-

@@ -8,22 +8,30 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    def rootDir = pwd()
                     def test
+                    def report
                     // point to exact source file
                     if(isUnix()){
-                        test = load "${rootDir}@script/readStewardsAndReviewers.groovy"
-                        report = load "${rootDir}@script/generateHtmlReport.groovy"
+                        test = load "${WORKSPACE}@script/readStewardsAndReviewers.groovy"
+                        report = load "${WORKSPACE}@script/generateHtmlReport.groovy"
                     }
                     else{
-                        test = load("${rootDir}\\readStewardsAndReviewers.groovy")
-                        report = load("${rootDir}\\generateHtmlReport.groovy")
-                        // report = load("${rootDir}\\htmlTable.groovy")
+                        test = load("${WORKSPACE}\\readStewardsAndReviewers.groovy")
+                        report = load("${WORKSPACE}\\generateHtmlReport.groovy")
+                        // report = load("${WORKSPACE}\\htmlTable.groovy")
                     }
 
                     def testResult = test.testSR()
-                    report.generateHtmlReport(testResult)
-                    // report.parseToHTMLTable()
+                    def testReport = report.generateHtmlReport(testResult)
+                    writeFile(file: 'report.html', text: testReport)
+                }
+            }
+        }
+        stage('Summary HTML REPORT') {
+            steps {
+                script {
+                    def summaryLink = "http://file:///${WORKSPACE}\\report.html"
+                    createSummary("document.png").appendText("<h2><u><a href='${summaryLink}'>MODULE STEWARDS LIST</a></u></h2>")
                 }
             }
         }

@@ -2,19 +2,19 @@
 
 def parseContactsYaml(contactsYaml, stewards, reviewers, moduleStewards) {
     def moduleName = contactsYaml.split('\\\\')[0]
-    def monikersList = []
+    def stewardsList = [:]
     readYaml( file: contactsYaml ).each { email, info ->
         if (info.roles) {
             if (info.roles.contains('steward')) {
                 stewards << email
-                monikersList << info.moniker
+                stewardsList << ["${info.moniker}": email]
             }
             if (info.roles.contains('reviewer')) {
                 reviewers << email
             }
         }
     }
-    moduleStewards << ["$moduleName": monikersList]
+    moduleStewards << ["$moduleName": stewardsList]
 }
 
 def testSR() {
@@ -31,8 +31,6 @@ def testSR() {
 
         stewards = stewards.toSorted().toUnique().join(', ')
         reviewers = reviewers.toSorted().toUnique().join(', ')
-        echo "Stewards: $stewards"
-        echo "Reviewers: $reviewers"
         return moduleStewards
     }
 }
